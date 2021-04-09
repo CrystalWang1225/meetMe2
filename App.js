@@ -1,21 +1,37 @@
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, {Component} from 'react';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, Button} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import {createStore} from 'redux';
+import reducers from './src/reducers/index';
+import {Provider} from 'react-redux';
+import {ScreenStackNavigator} from './src/navigations/ScreenStackNavigator';
+import {BottomTabs} from './src/navigations/HomeNavigator';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+const Store = createStore(reducers);
+const Stack = createStackNavigator();
+
+export default class App extends React.Component {
+  render(){
+    return (
+      <Provider store={Store}>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{headerShown: false}}>
+            <Stack.Screen  name={'ScreenStack'} component={ScreenStackNavigator} options={{gestureEnabled: false }}/>
+            <Stack.Screen name={'Home'} component={BottomTabs} options={{ gestureEnabled: false}}/>
+            </Stack.Navigator>
+        </NavigationContainer>
+      </Provider>
+
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  container:{
+    backgroundColor: '#F3E5F5',
+    flex:1,
+    justifyContent: 'center'
+  }
 });
