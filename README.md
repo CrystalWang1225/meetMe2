@@ -57,11 +57,15 @@ npm start
 <p align="center">
   <img src="img/list_event.png"height=30% width=30%>
   </p>
-* Maing Reservation
+* My Reservation & Event 
  <p align="center">
   <img src="img/reservation.png"height=30% width=30%>
   </p>
-* Making new Event
+* Making new registration
  <p align="center">
   <img src="img/NewReserve.png"height=30% width=30%>
+  </p>
+  * Making new event
+ <p align="center">
+  <img src="img/addEvent.png"height=30% width=30%>
   </p>
