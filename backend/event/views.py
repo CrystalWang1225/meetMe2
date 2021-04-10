@@ -2,7 +2,7 @@ from flask import Flask, request, session, redirect, url_for, render_template, f
 from flask import jsonify
 from .models import User, db, Event, Registration
 import flask_praetorian
-from backend.event import app
+from event import app
 from base64 import b64decode, b64encode
 from six.moves.urllib.parse import quote, unquote
 from re import search

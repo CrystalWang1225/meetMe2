@@ -11,5 +11,4 @@ web-build/
 
 # macOS
 .DS_Store
-backend/env1/**
-backend/env/**
+backend/__pycache__
