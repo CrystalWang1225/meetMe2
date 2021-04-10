@@ -6,7 +6,7 @@ import { connect } from 'react-redux'
 import {UserInputs} from '../components/UserInputs'
 
 
-class Event extends React.Component{
+class MyEvent extends React.Component{
     constructor(props){
         super(props)
         this.state = {
@@ -21,20 +21,9 @@ class Event extends React.Component{
            date: '',
            event_name:'',
            description: '',
-           descripShow: false
+           editFormShow: false
         }
     }
-    async addDescription(){
-        this.setState({descripShow : true})
-    }
-
-    async exitNote(){
-        this.setState({descripShow : false})
-    }
-
-    getDescription(description) {
-        this.setState({ description: description });
-      }
 
     async reserve(){
     await fetch('http://127.0.0.1:5000/api/reserve', {
@@ -58,6 +47,15 @@ class Event extends React.Component{
           //console.log('Request failed', error);
         });   
     }
+
+    editFormShow() {
+        this.setState({ editFormShow: true });
+      }
+    
+      editFormClose() {
+        this.setState({ editFormShow: false });
+      }
+
     render() {
         return (
             <Card>
@@ -89,18 +87,18 @@ class Event extends React.Component{
                     Description: {this.props.eventData.description}
                 </Text>
                  <View style={styles.EditAndDelete}>
-                    <Button
+                    {/* <Button
                         buttonStyle={{ backgroundColor: '#6D4C41', borderRadius: 10, width: 140, marginRight:10}}
-                        title='Register' onPress={() => this.addDescription()}/>
+                        title='Edit' onPress={() => this.addDescription()}/> */}
                     {/* <Button
                         buttonStyle={{ backgroundColor: '#2F3244', borderRadius: 10, width: 140,marginLeft:10}}
                         title='Delete' onPress={() => this.remove()}/> */}
                 </View> 
 
-        <Modal transparent={true} visible={this.state.descripShow} animationType="slide">
+        <Modal transparent={true} visible={this.state.editFormShow} animationType="slide">
           <View style={styles.modalView}>
             <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>Add Note for your Reservation</Text>
+              <Text style={styles.modalTitle}>Edit your Event</Text>
               <View style={styles.TitleAndInput}>
                 <Text style={styles.modalText}>Notes:     </Text>
                 <UserInputs style={styles.input} placeholder="Notes" getInput={(description) => this.getDescription(description)} />
@@ -119,7 +117,7 @@ class Event extends React.Component{
         )
     }
 }
-export default Event;
+export default MyEvent;
 
 const styles = StyleSheet.create({
     cardHeading: {

@@ -3,8 +3,6 @@ from flask import jsonify
 from .models import User, db, Event, Registration
 import flask_praetorian
 from backend.event import app
-from datetime import date, datetime
-import jwt
 from base64 import b64decode, b64encode
 from six.moves.urllib.parse import quote, unquote
 from re import search
@@ -66,7 +64,7 @@ def signup():
         reg = User(firstname=req['firstname'], lastname=req['lastname'], \
                    username=req['username'], password=req['password'], \
                    institution=req['institution'], occupation=req['occupation'],
-                   email=req['email'].tolower())
+                   email=req['email'].lower())
         db.session.add(reg)
         db.session.commit()
         return jsonify(status=200)
@@ -93,10 +91,11 @@ def login():
 @app.route('/api/reserve', methods=['POST'])
 def reserve_event():
     req = request.get_json(force=True)
-    print(req)
     auth_token = request.headers['x-access-token']
     email, password = decode(auth_token)
-    log = User.query.filter_by(email=email).first()
+    log = User.query.filter_by(email=email.lower()).first()
+    print("email", email)
+    print(log)
     if request.method == 'POST':
         reserve = Registration(log.uid, req['event_id'], req['description'])
         db.session.add(reserve)
@@ -110,9 +109,7 @@ def reserve_event():
 def list_users():
     auth_token = request.headers['x-access-token']
     email, password = decode(auth_token)
-    print(email)
     log = User.query.filter_by(email=email.lower()).first()
-    print(log)
     if request.method == 'GET':
         return jsonify({'status': 200,
                         'token': auth_token,
@@ -194,13 +191,10 @@ def show_reservaton():
     auth_token = request.headers['x-access-token']
     email, password = decode(auth_token)
     log = User.query.filter_by(email=email.lower()).first()
-    all_events = Event.query.all()
     response_data = []
-    print(log.uid)
     if request.method == 'GET':
         reservations = Registration.query.filter_by(ruid=log.uid).all()
         for reserve in reservations:
-            print("reserve", reserve.reid)
             event = Event.query.filter_by(event_id=reserve.reid).first()
             user = User.query.filter_by(uid=event.creator_id).first()
             response_data.append({
@@ -214,7 +208,6 @@ def show_reservaton():
                 'note': reserve.description,
                 'event_id': event.event_id
             })
-        print(response_data)
         return jsonify(response_data)
 
 

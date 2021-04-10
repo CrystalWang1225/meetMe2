@@ -4,8 +4,9 @@ import { StyleSheet, Text, ScrollView, Dimensions, View, TouchableOpacity, Modal
 import { Button, Card } from 'react-native-elements';
 import { connect } from 'react-redux'
 import { AntDesign } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation, useRoute,useIsFocused} from '@react-navigation/native';
 import Event from './Event'
+import MyEvent from './MyEvent'
 import {userPass} from "../actions/Index"
 import {UserInputs} from '../components/UserInputs'
 import Registration from './Registration'
@@ -14,9 +15,11 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window')
 
 function ReservationScreen(props) {
     const navigation = useNavigation();
+    const isFocused = useIsFocused();
     //console.log("A", props)
     //console.log("BBBBBB", props.passToken)
-    return <ReservationView navigation={navigation} passToken={props.passToken}/>
+    return <ReservationView navigation={navigation} passToken={props.passToken}
+      isFocused={isFocused}/>
   }
 
   class ReservationView extends React.Component {
@@ -39,6 +42,8 @@ function ReservationScreen(props) {
           newDuration: ''
         // adddropdown_currentinput: ""
       }
+      this.wasFocused = false
+      this.shoudlUpdate = false
       //this.UsernameLogin = this.props.route.params.UsernameLogin;
       //this.TokenLogin = this.props.route.params.TokenLogin;
       // console.log("AAAAAA",this.props)
@@ -83,8 +88,46 @@ function ReservationScreen(props) {
           console.log('Error when fetch reserves', error);
         });
     }
+
     logout() {
       this.props.navigation.navigate('Login')
+    }
+
+    async componentDidUpdate() {
+      if (this.props.isFocused){
+        console.log("isFocused is true!")
+        if (this.wasFocused){
+          console.log("wasFocused is not true! ")
+          this.shoudlUpdate = false
+          return
+        }
+        this.wasFocused = true
+        this.shoudlUpdate = true
+      } else {
+        this.wasFocused = false
+        this.shoudlUpdate = false
+
+        return
+      }
+
+      await fetch("http://127.0.0.1:5000/api/list_reserves", {
+        method: 'GET',
+        headers: {
+         'x-access-token': this.props.passToken.token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        }
+      }).then((response) => response.json())
+        .then((json) => {
+            console.log("json, ", json)
+          this.setState({
+            register_state: json
+          })
+         // console.log(json)
+        })
+        .catch(function (error) {
+          console.log('Error when fetch reserves', error);
+        });
     }
 
     async save(){
@@ -159,28 +202,30 @@ function ReservationScreen(props) {
               console.log('Error when fetch exercises after post', error);
             });
           this.addFormClose(); 
+          this.refresh();
     }
-    // async componentDidUpdate() {
+      
+    async refresh(){
+      await fetch("http://127.0.0.1:5000/api/events/" + this.props.passToken.token, {
+        method: 'GET',
+        headers: {
+         'x-access-token': this.props.passToken.token,
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          
+        }
+      }).then((response) => response.json())
+        .then((json) => {
+          this.setState({
+            events_state: json
+          })
+         // console.log(json)
+        })
+        .catch(function (error) {
+          console.log('Error when fetch events', error);
+        });
+    }
 
-    //     await fetch("http://127.0.0.1:5000/api/events", {
-    //         method: 'GET',
-    //         headers: {
-    //         'x-access-token': this.props.passToken.token,
-    //           Accept: 'application/json',
-    //           'Content-Type': 'application/json'
-    //         }
-    //       }).then((response) => response.json())
-    //         .then((json) => {
-    //           this.setState({
-    //             events_state: json
-    //           })
-    //           console.log("for updating")
-    //         })
-    //         .catch(function (error) {
-    //           console.log('Error when fetch events', error);
-    //         });
-    // }
-  
     getEvents() {
       
       let events = [];
@@ -192,7 +237,7 @@ function ReservationScreen(props) {
       for (const event of Object.values(this.state.events_state)) {
         events.push(
   
-          <Event eventData={event} key={event.event_id} id={event.event_id} passToken={this.props.passToken} />
+          <MyEvent eventData={event} key={event.event_id} id={event.event_id} passToken={this.props.passToken} />
         )
       }
       return events

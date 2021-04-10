@@ -33,49 +33,8 @@ function SearchScreen(props) {
           newDay: 0,
         // adddropdown_currentinput: ""
       }
-      //this.UsernameLogin = this.props.route.params.UsernameLogin;
-      //this.TokenLogin = this.props.route.params.TokenLogin;
-      // console.log("AAAAAA",this.props)
     }
     async componentDidMount() {
-    //   // for getting the events created by this specific account
-    //   await fetch("http://127.0.0.1:5000/api/events/" + this.props.passToken.token, {
-    //     method: 'GET',
-    //     headers: {
-    //      'x-access-token': this.props.passToken.token,
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-          
-    //     }
-    //   }).then((response) => response.json())
-    //     .then((json) => {
-    //       this.setState({
-    //         events_state: json
-    //       })
-    //      // console.log(json)
-    //     })
-    //     .catch(function (error) {
-    //       console.log('Error when fetch events', error);
-    //     });
-    // // for getting my reserved events
-    //   await fetch("http://127.0.0.1:5000/api/list_reserves", {
-    //     method: 'GET',
-    //     headers: {
-    //      'x-access-token': this.props.passToken.token,
-    //       Accept: 'application/json',
-    //       'Content-Type': 'application/json',
-    //     }
-    //   }).then((response) => response.json())
-    //     .then((json) => {
-    //         console.log("json, ", json)
-    //       this.setState({
-    //         register_state: json
-    //       })
-    //      // console.log(json)
-    //     })
-    //     .catch(function (error) {
-    //       console.log('Error when fetch reserves', error);
-    //     });
     }
     logout() {
       this.props.navigation.navigate('Login')
